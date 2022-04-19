@@ -10,6 +10,7 @@ dnf install -y man-db
 dnf install -y sudo passwd dnf vim wget util-linux readline net-tools openssh openssl zip unzip
 dnf reinstall -y shadow-utils
 
+# Add the default bash profile settings.
 echo -e  "- Adding default Bash profile -"
 mv -f /tmp/default-bash-profile/bashrc /etc/bashrc
 rm -rf /etc/profile.d/*
@@ -40,13 +41,17 @@ echo "[automount]
 enabled=true
 root=/mnt" > /etc/wsl.conf
 
+# Cleanup the temp directory for the default bash profile.
 rm -rf /tmp/default-bash-profile
 
-echo -e "- Setting VIM as the default text editor -"
-sudo dnf install -y vim-default-editor
+# Set vim as the default text editor, otherwise nano will be the default.
+echo -e "- Setting vim as the default text editor -"
+dnf install -y vim-default-editor
 
+# Install any extra packages:
+#   * bash-completion - For populating tab completion
 echo -e "- Installing extra packages -"
-sudo dnf install -y bash-completion
+dnf install -y bash-completion
 
 # Cleanup unused packages to make the image smaller.
 echo -e "- Cleaning up -"
