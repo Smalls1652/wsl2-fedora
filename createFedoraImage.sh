@@ -60,7 +60,7 @@ docker build --tag wsl2-fedora "${scriptDir}"
 echo -e "--------------------------------------\n"
 
 # Start a container from the built image and get it's ID.
-docker run -t --name=wsl2-fedora wsl2-fedora:latest bash ls /
+docker run -t --name=wsl2-fedora wsl2-fedora:latest echo "Hello world!"
 
 containerId=$(docker container ls -a | grep -i wsl2-fedora | awk '{print $1}')
 
