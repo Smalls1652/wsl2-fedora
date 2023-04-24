@@ -1,14 +1,33 @@
 #!/bin/bash
 
+echo -e "- Installing packages and updating existing packages -"
+dnf install -y man-db
+if [ $(cat /etc/dnf/dnf.conf | grep "tsflags=nodocs" --count) = 1 ]; then
+    echo -e "- dnf is configured to not install docs, setting it to install man pages -"
+    echo -e "\n- /etc/dnf/dnf.conf | Before:"
+    cat /etc/dnf/dnf.conf
+
+    echo "[main]
+gpgcheck=1
+installonly_limit=3
+clean_requirements_on_remove=True
+best=False
+skip_if_unavailable=True" > /etc/dnf/dnf.conf
+
+    echo -e "\n- /etc/dnf/dnf.conf | After:"
+    cat /etc/dnf/dnf.conf
+    echo -e "\n"
+
+    echo -e "- Reinstalling all existing packages to get man pages -"
+    dnf reinstall -y $(sudo dnf list --installed | awk '{print $1}')
+    mandb --create
+fi
+
 # Update all existing packages installed in the image.
-echo -e "- Updating already installed packages -"
 dnf upgrade --refresh -y
 
 # Install packages that will be useful in WSL.
-echo -e "- Installing packages -"
-dnf install -y man-db
 dnf install -y sudo passwd dnf vim wget util-linux readline net-tools openssh openssl zip unzip
-dnf reinstall -y shadow-utils
 
 # Add the default bash profile settings.
 echo -e  "- Adding default Bash profile -"
@@ -39,7 +58,10 @@ shopt -s checkwinsize
 echo -e "- Configuring 'wsl.conf' file - "
 echo "[automount]
 enabled=true
-root=/mnt" > /etc/wsl.conf
+root=/mnt
+
+[boot]
+systemd=true" > /etc/wsl.conf
 
 # Cleanup the temp directory for the default bash profile.
 rm -rf /tmp/default-bash-profile
