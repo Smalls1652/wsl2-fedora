@@ -27,7 +27,7 @@ fi
 dnf upgrade --refresh -y
 
 # Install packages that will be useful in WSL.
-dnf install -y sudo passwd dnf vim wget util-linux readline net-tools openssh openssl zip unzip cracklib-dicts
+dnf install -y sudo passwd dnf vim wget util-linux readline net-tools openssh openssl zip unzip cracklib-dicts iputils bind-utils
 
 # Add the default bash profile settings.
 echo -e  "- Adding default Bash profile -"
